@@ -1,15 +1,20 @@
 import express from 'express'
 import cors from 'cors'
 import mongoose from 'mongoose'
-import connectDB from './db.js'
+import dotenv from "dotenv"
+dotenv.config()
 
 const app= express();
-app.use(express.urlencoded())
+// app.use(express.urlencoded())
 app.use(express.json())
 app.use(cors())
 
+// const PORT = process.env.PORT || 5000 
+
 // mongoose connect
-connectDB()
+mongoose.connect(process.env.MONGO_URL). 
+then(()=> console.log("Mongodb connected succesfully")).catch((err)=> console.log(err))
+
 // schema
 const keeperSchema  = mongoose.Schema({
     title: String,
@@ -25,7 +30,6 @@ app.get("/api/getAll", async (req, res) => {
         console.log(err)
     }
 })
-
 
 app.post("/api/addNew", async (req, res) => {
     const { title, description } = req.body
@@ -43,8 +47,6 @@ app.post("/api/addNew", async (req, res) => {
     }
 })
 
-
- 
 app.post("/api/delete", async (req, res) => {
     const { id } = req.body
     try {
@@ -57,6 +59,10 @@ app.post("/api/delete", async (req, res) => {
     }
 })
 
-app.listen(3001, ()=>{
-    console.log(`listening on port 3001`)
-})
+app.listen(process.env.PORT || 5002, () => {
+    console.log(`Example app listening`)
+  })
+
+// app.listen(process.env.PORT  || 5000, ()=>{
+//     console.log(`listening on port ${PORT}`)
+// })
